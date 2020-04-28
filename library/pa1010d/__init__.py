@@ -45,7 +45,7 @@ class PA1010D():
 
     def send_command(self, command, add_checksum=True):
         """Send a command string to the PA1010D.
-        
+
         If add_checksum is True (the default) a NMEA checksum will automatically be computed and added.
 
         """
@@ -90,7 +90,7 @@ class PA1010D():
 
     def update(self, wait_for="GGA", timeout=5):
         """Attempt to update from PA1010D.
-        
+
         Returns true if a sentence has been successfully parsed.
 
         Returns false if an error has occured.
@@ -152,7 +152,6 @@ class PA1010D():
 
 if __name__ == "__main__":
     gps = PA1010D()
-
 
     while True:
         result = gps.update()
