@@ -1,4 +1,4 @@
 [run]
-source = {{LIBNAME}}
+source = pa1010d
 omit =
     .tox/*
