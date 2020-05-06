@@ -18,6 +18,8 @@ class PA1010D():
         "altitude",
         "num_sats",
         "gps_qual",
+        "speed_over_ground",
+        "mode_fix_type",
         "_i2c_addr",
         "_i2c"
     )
@@ -32,6 +34,9 @@ class PA1010D():
         self.altitude = None
         self.num_sats = None
         self.gps_qual = None
+
+        self.speed_over_ground = None
+        self.mode_fix_type = None
 
     def _write_sentence(self, bytestring):
         """Write a sentence to the PA1010D device over i2c.
@@ -114,6 +119,7 @@ class PA1010D():
             except pynmea2.nmea.ParseError:
                 continue
 
+            # Time, position and fix
             if type(result) == pynmea2.GGA:
                 if result.gps_qual is None:
                     self.num_sats = 0
@@ -128,18 +134,24 @@ class PA1010D():
                 if wait_for == "GGA":
                     return True
 
+            # GPS DOP and active satellites
             elif type(result) == pynmea2.GSA:
+                self.mode_fix_type = result.mode_fix_type
                 if wait_for == "GSA":
                     return True
 
+            # Position, velocity and time
             elif type(result) == pynmea2.RMC:
+                self.speed_over_ground = result.spd_over_grnd
                 if wait_for == "RMC":
                     return True
 
+            # Track made good and speed over ground
             elif type(result) == pynmea2.VTG:
                 if wait_for == "VTG":
                     return True
 
+            # SVs in view, PRN, elevation, azimuth and SNR
             elif type(result) == pynmea2.GSV:
                 if wait_for == "GSV":
                     return True

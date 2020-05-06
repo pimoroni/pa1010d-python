@@ -16,5 +16,7 @@ E: {gps.latitude}
 Alt: {gps.altitude}
 Sats: {gps.num_sats}
 Qual: {gps.gps_qual}
+Speed: {gps.speed_over_ground}
+Fix Type: {gps.mode_fix_type}
 """)
     time.sleep(1.0)
