@@ -117,7 +117,7 @@ user_check
 
 apt_pkg_install python-configparser
 
-CONFIG_VARS=python - <<EOF
+CONFIG_VARS=`python - <<EOF
 from configparser import ConfigParser
 c = ConfigParser()
 c.read('library/setup.cfg')
@@ -166,7 +166,7 @@ cd library
 
 printf "Installing for Python 2..\n"
 apt_pkg_install "${PY2_DEPS[@]}"
-if [ $UNSTABLE ]; then
+if $UNSTABLE; then
 	python setup.py install > /dev/null
 else
 	pip install $LIBRARY_NAME
@@ -179,7 +179,7 @@ fi
 if [ -f "/usr/bin/python3" ]; then
 	printf "Installing for Python 3..\n"
 	apt_pkg_install "${PY3_DEPS[@]}"
-	if [ $UNSTABLE ]; then
+	if $UNSTABLE; then
 		python3 setup.py install > /dev/null
 	else
 		pip3 install $LIBRARY_NAME
@@ -233,7 +233,7 @@ if [ -f "/usr/bin/pydoc" ]; then
 		inform "Documentation saved to $RESOURCES_DIR/docs.html"
 		success "Done!"
 	else
-		error "Failed to generate documentation."
+		warning "Error: Failed to generate documentation."
 	fi
 fi
 
