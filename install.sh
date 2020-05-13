@@ -8,27 +8,8 @@ USER_HOME=/home/$SUDO_USER
 RESOURCES_TOP_DIR=$USER_HOME/Pimoroni
 WD=`pwd`
 USAGE="sudo ./install.sh (--unstable)"
+POSITIONAL_ARGS=()
 UNSTABLE=false
-
-get_args() {
-	while [[ $# -gt 0 ]]; do
-		K="$1"
-		case $K in
-		-u|--unstable)
-			UNSTABLE=true
-			shift
-			;;
-		*)
-			if [[ $1 == -* ]]; then
-				printf "Unrecognised option: $1\n";
-				printf "Usage: $USAGE\n";
-				exit 1
-			fi
-			POSITIONAL_ARGS+=("$1")
-			shift
-		esac
-	done
-}
 
 user_check() {
 	if [ $(id -u) -ne 0 ]; then
@@ -111,7 +92,23 @@ function apt_pkg_install {
 	fi
 }
 
-get_args
+while [[ $# -gt 0 ]]; do
+	K="$1"
+	case $K in
+	-u|--unstable)
+		UNSTABLE=true
+		shift
+		;;
+	*)
+		if [[ $1 == -* ]]; then
+			printf "Unrecognised option: $1\n";
+			printf "Usage: $USAGE\n";
+			exit 1
+		fi
+		POSITIONAL_ARGS+=("$1")
+		shift
+	esac
+done
 
 user_check
 
@@ -165,7 +162,7 @@ printf "$LIBRARY_NAME $LIBRARY_VERSION Python Library: Installer\n\n"
 if $UNSTABLE; then
 	warning "Installing unstable library from source.\n\n"
 else
-	echo "Installing stable library from pypi.\n\n"
+	printf "Installing stable library from pypi.\n\n"
 fi
 
 cd library
