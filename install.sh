@@ -162,7 +162,7 @@ EOF
 
 printf "$LIBRARY_NAME $LIBRARY_VERSION Python Library: Installer\n\n"
 
-if [ $UNSTABLE ]; then
+if $UNSTABLE; then
 	warning "Installing unstable library from source.\n\n"
 else
 	echo "Installing stable library from pypi.\n\n"
@@ -175,7 +175,7 @@ apt_pkg_install "${PY2_DEPS[@]}"
 if $UNSTABLE; then
 	python setup.py install > /dev/null
 else
-	pip install $LIBRARY_NAME
+	pip install --upgrade $LIBRARY_NAME
 fi
 if [ $? -eq 0 ]; then
 	success "Done!\n"
@@ -188,7 +188,7 @@ if [ -f "/usr/bin/python3" ]; then
 	if $UNSTABLE; then
 		python3 setup.py install > /dev/null
 	else
-		pip3 install $LIBRARY_NAME
+		pip3 install --upgrade $LIBRARY_NAME
 	fi
 	if [ $? -eq 0 ]; then
 		success "Done!\n"
