@@ -7,6 +7,28 @@ APT_HAS_UPDATED=false
 USER_HOME=/home/$SUDO_USER
 RESOURCES_TOP_DIR=$USER_HOME/Pimoroni
 WD=`pwd`
+USAGE="sudo ./install.sh (--unstable)"
+UNSTABLE=false
+
+get_args() {
+	while [[ $# -gt 0 ]]; do
+		K="$1"
+		case $K in
+		-u|--unstable)
+			UNSTABLE=true
+			shift
+			;;
+		*)
+			if [[ $1 == -* ]]; then
+				printf "Unrecognised option: $1\n";
+				printf "Usage: $USAGE\n";
+				exit 1
+			fi
+			POSITIONAL_ARGS+=("$1")
+			shift
+		esac
+	done
+}
 
 user_check() {
 	if [ $(id -u) -ne 0 ]; then
@@ -89,11 +111,13 @@ function apt_pkg_install {
 	fi
 }
 
+get_args
+
 user_check
 
 apt_pkg_install python-configparser
 
-CONFIG_VARS=`python - <<EOF
+CONFIG_VARS=python - <<EOF
 from configparser import ConfigParser
 c = ConfigParser()
 c.read('library/setup.cfg')
@@ -142,7 +166,11 @@ cd library
 
 printf "Installing for Python 2..\n"
 apt_pkg_install "${PY2_DEPS[@]}"
-python setup.py install > /dev/null
+if [ $UNSTABLE ]; then
+	python setup.py install > /dev/null
+else
+	pip install $LIBRARY_NAME
+fi
 if [ $? -eq 0 ]; then
 	success "Done!\n"
 	echo "pip uninstall $LIBRARY_NAME" >> $UNINSTALLER
@@ -151,7 +179,11 @@ fi
 if [ -f "/usr/bin/python3" ]; then
 	printf "Installing for Python 3..\n"
 	apt_pkg_install "${PY3_DEPS[@]}"
-	python3 setup.py install > /dev/null
+	if [ $UNSTABLE ]; then
+		python3 setup.py install > /dev/null
+	else
+		pip3 install $LIBRARY_NAME
+	fi
 	if [ $? -eq 0 ]; then
 		success "Done!\n"
 		echo "pip3 uninstall $LIBRARY_NAME" >> $UNINSTALLER
