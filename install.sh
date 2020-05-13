@@ -10,6 +10,7 @@ WD=`pwd`
 USAGE="sudo ./install.sh (--unstable)"
 POSITIONAL_ARGS=()
 UNSTABLE=false
+PYTHON3=`which python3`
 
 user_check() {
 	if [ $(id -u) -ne 0 ]; then
@@ -135,6 +136,7 @@ PY3_DEPS={py3deps}
 PY2_DEPS={py2deps}
 SETUP_CMDS={commands}
 CONFIG_TXT={configtxt}
+PY3_ONLY={py3only}
 """.format(**p))
 EOF`
 
@@ -167,19 +169,21 @@ fi
 
 cd library
 
-printf "Installing for Python 2..\n"
-apt_pkg_install "${PY2_DEPS[@]}"
-if $UNSTABLE; then
-	python setup.py install > /dev/null
-else
-	pip install --upgrade $LIBRARY_NAME
-fi
-if [ $? -eq 0 ]; then
-	success "Done!\n"
-	echo "pip uninstall $LIBRARY_NAME" >> $UNINSTALLER
+if ! $PY3_ONLY; then
+	printf "Installing for Python 2..\n"
+	apt_pkg_install "${PY2_DEPS[@]}"
+	if $UNSTABLE; then
+		python setup.py install > /dev/null
+	else
+		pip install --upgrade $LIBRARY_NAME
+	fi
+	if [ $? -eq 0 ]; then
+		success "Done!\n"
+		echo "pip uninstall $LIBRARY_NAME" >> $UNINSTALLER
+	fi
 fi
 
-if [ -f "/usr/bin/python3" ]; then
+if [ -f "$PYTHON3" ]; then
 	printf "Installing for Python 3..\n"
 	apt_pkg_install "${PY3_DEPS[@]}"
 	if $UNSTABLE; then
@@ -190,6 +194,11 @@ if [ -f "/usr/bin/python3" ]; then
 	if [ $? -eq 0 ]; then
 		success "Done!\n"
 		echo "pip3 uninstall $LIBRARY_NAME" >> $UNINSTALLER
+	fi
+else
+	if $PY3_ONLY; then
+		warning "Python 3 is required to install this library...\n"
+		exit 1
 	fi
 fi
 
