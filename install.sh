@@ -162,6 +162,12 @@ EOF
 
 printf "$LIBRARY_NAME $LIBRARY_VERSION Python Library: Installer\n\n"
 
+if [ $UNSTABLE ]; then
+	warning "Installing unstable library from source.\n\n"
+else
+	echo "Installing stable library from pypi.\n\n"
+fi
+
 cd library
 
 printf "Installing for Python 2..\n"
