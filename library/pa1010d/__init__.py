@@ -110,12 +110,12 @@ class PA1010D():
 
         while time.time() < timeout:
             try:
-                result = self.read_sentence()
+                sentence = self.read_sentence()
             except TimeoutError:
                 continue
 
             try:
-                result = pynmea2.parse(result)
+                result = pynmea2.parse(sentence)
             except pynmea2.nmea.ParseError:
                 continue
 
@@ -156,8 +156,29 @@ class PA1010D():
                 if wait_for == "GSV":
                     return True
 
+            # ProprietarySentence handles boot up output such as "$PMTK011,MTKGPS*08"
+            elif type(result) == pynmea2.ProprietarySentence:
+                # TODO If we implement sending commands *to* the GPS,
+                # they should not be permitted until after receiving this sequence
+                # $PMTK011,MTKGPS*08 Successful bootup
+                # $PMTK010,001*2E    Startup
+                # $PMTK010,002*2D    Wake from standby, normal operation
+                print(sentence)
+                return True
+
             else:
-                raise RuntimeError(f"Unsupported message type {type(result)}")
+                # If native MTK support exists, check for those message types
+                # requires merge and release of: https://github.com/Knio/pynmea2/pull/111
+                # TODO Drop this special case when #111 is merged & released
+                try:
+                    if type(result) in (
+                        pynmea2.types.proprietary.mtk.MTK011,
+                        pynmea2.types.proprietary.mtk.MTK010
+                    ):
+                        return True
+                except AttributeError:
+                    pass
+                raise RuntimeError(f"Unsupported message type {type(result)} ({sentence})")
 
         raise TimeoutError(f"Timeout waiting for {wait_for} message.")
 
