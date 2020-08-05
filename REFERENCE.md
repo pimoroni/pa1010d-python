@@ -18,6 +18,8 @@ Messages are decoded using [pynmea2](https://github.com/Knio/pynmea2).
 
 ## Getting Started
 
+The PA1010D Python library requires Python 3.4 or greater.
+
 Most people should grab the code from GitHub and run our simple installer.
 
 ### Installing (Stable)

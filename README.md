@@ -15,13 +15,18 @@ You can optionally run `sudo raspi-config` or the graphical Raspberry Pi Configu
 
 # Installing
 
-Stable library from PyPi:
-
-* Just run `sudo pip3 install pa1010d`
-
-Latest/development library from GitHub:
+Stable library and dependencies from GitHub:
 
 * `git clone https://github.com/pimoroni/pa1010d-python`
 * `cd pa1010d-python`
 * `sudo ./install.sh`
 
+Latest/development library and dependencies from GitHub:
+
+* `git clone https://github.com/pimoroni/pa1010d-python`
+* `cd pa1010d-python`
+* `sudo ./install.sh --unstable`
+
+Stable (library only) from PyPi:
+
+* Just run `sudo pip3 install pa1010d`
