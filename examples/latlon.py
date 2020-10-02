@@ -9,14 +9,14 @@ gps = PA1010D()
 while True:
     result = gps.update()
     if result:
-        print(f"""
-T: {gps.timestamp}
-N: {gps.longitude}
-E: {gps.latitude}
-Alt: {gps.altitude}
-Sats: {gps.num_sats}
-Qual: {gps.gps_qual}
-Speed: {gps.speed_over_ground}
-Fix Type: {gps.mode_fix_type}
-""")
+        print("""
+T: {timestamp}
+N: {longitude}
+E: {latitude}
+Alt: {altitude}
+Sats: {num_sats}
+Qual: {gps_qual}
+Speed: {speed_over_ground}
+Fix Type: {mode_fix_type}
+""".format(**gps.data))
     time.sleep(1.0)

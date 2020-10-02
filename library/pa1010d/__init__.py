@@ -38,6 +38,10 @@ class PA1010D():
         self.speed_over_ground = None
         self.mode_fix_type = None
 
+    @property
+    def data(self):
+        return dict((slot, getattr(self, slot)) for slot in self.__slots__)
+
     def _write_sentence(self, bytestring):
         """Write a sentence to the PA1010D device over i2c.
 
@@ -70,7 +74,7 @@ class PA1010D():
             for char in command:
                 checksum ^= char
             buf += b'*'  # Delimits checksum value
-            buf += f"{checksum:02X}".encode("ascii")
+            buf += "{checksum:02X}".format(checksum=checksum).encode("ascii")
         buf += b'\r\n'
         self._write_sentence(buf)
 
@@ -178,9 +182,9 @@ class PA1010D():
                         return True
                 except AttributeError:
                     pass
-                raise RuntimeError(f"Unsupported message type {type(result)} ({sentence})")
+                raise RuntimeError("Unsupported message type {type} ({sentence})".format(type=type(result), sentence=sentence))
 
-        raise TimeoutError(f"Timeout waiting for {wait_for} message.")
+        raise TimeoutError("Timeout waiting for {wait_for} message.".format(wait_for=wait_for))
 
 
 if __name__ == "__main__":
@@ -189,12 +193,19 @@ if __name__ == "__main__":
     while True:
         result = gps.update()
         if result:
-            print(f"""
-T: {gps.timestamp}
-N: {gps.longitude}
-E: {gps.latitude}
-Alt: {gps.altitude}
-Sats: {gps.num_sats}
-Qual: {gps.gps_qual}
-""")
+            print("""
+T: {timestamp}
+N: {longitude}
+E: {latitude}
+Alt: {altitude}
+Sats: {num_sats}
+Qual: {gps_qual}
+""".format(
+                timestamp=gps.timestamp,
+                longitude=gps.longitude,
+                latitude=gps.latitude,
+                altitude=gps.altitude,
+                num_sats=gps.num_sats,
+                gps_qual=gps.gps_qual
+            ))
         time.sleep(1.0)
