@@ -1,11 +1,11 @@
-__version__ = "0.0.1"
-
 import time
 import smbus
 
 
 import pynmea2
 
+
+__version__ = '0.0.1'
 
 PA1010D_ADDR = 0x10
 
