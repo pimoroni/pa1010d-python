@@ -9,4 +9,3 @@ def smbus():
     sys.modules["smbus"] = smbus
     yield smbus
     del sys.modules["smbus"]
-

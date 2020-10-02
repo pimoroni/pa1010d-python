@@ -3,4 +3,3 @@ def test_setup(smbus):
 
     gps = pa1010d.PA1010D()
     del gps
-
