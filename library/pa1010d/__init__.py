@@ -21,12 +21,15 @@ class PA1010D():
         "speed_over_ground",
         "mode_fix_type",
         "_i2c_addr",
-        "_i2c"
+        "_i2c",
+        "_debug"
     )
 
-    def __init__(self, i2c_addr=PA1010D_ADDR):
+    def __init__(self, i2c_addr=PA1010D_ADDR, debug=False):
         self._i2c_addr = i2c_addr
         self._i2c = smbus.SMBus(1)
+
+        self._debug = debug
 
         self.timestamp = None
         self.latitude = None
@@ -92,8 +95,10 @@ class PA1010D():
             buf += [char]
 
             # Check for end of line
-            if buf[-1] == ord("\n"):
-                return bytearray(buf).decode("ascii")
+            # Should be a full \r\n since the GPS emits spurious newlines
+            if buf[-2:] == [ord("\r"), ord("\n")]:
+                # Remove line ending and spurious newlines from the sentence
+                return bytearray(buf).decode("ascii").strip().replace("\n","")
 
         raise TimeoutError("Timeout waiting for readline")
 
@@ -121,6 +126,8 @@ class PA1010D():
             try:
                 result = pynmea2.parse(sentence)
             except pynmea2.nmea.ParseError:
+                if self._debug:
+                    print("Parse error: {sentence}".format(sentence=sentence))
                 continue
 
             # Time, position and fix
