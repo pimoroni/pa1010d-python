@@ -152,7 +152,7 @@ class PA1010D():
                 if wait_for == "GGA":
                     return True
 
-            # GPS
+            # Geographic Lat/Lon (Loran holdover)
             elif type(result) == pynmea2.GLL:
                 pass
 
