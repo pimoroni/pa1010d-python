@@ -18,5 +18,8 @@ Sats: {num_sats}
 Qual: {gps_qual}
 Speed: {speed_over_ground}
 Fix Type: {mode_fix_type}
+PDOP: {pdop}
+VDOP: {vdop}
+HDOP: {hdop}
 """.format(**gps.data))
     time.sleep(1.0)

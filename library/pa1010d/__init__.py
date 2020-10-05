@@ -20,6 +20,9 @@ class PA1010D():
         "gps_qual",
         "speed_over_ground",
         "mode_fix_type",
+        "pdop",
+        "hdop",
+        "vdop",
         "_i2c_addr",
         "_i2c",
         "_debug"
@@ -37,6 +40,10 @@ class PA1010D():
         self.altitude = None
         self.num_sats = None
         self.gps_qual = None
+
+        self.pdop = None
+        self.hdop = None
+        self.vdop = None
 
         self.speed_over_ground = None
         self.mode_fix_type = None
@@ -145,9 +152,16 @@ class PA1010D():
                 if wait_for == "GGA":
                     return True
 
+            # GPS
+            elif type(result) == pynmea2.GLL:
+                pass
+
             # GPS DOP and active satellites
             elif type(result) == pynmea2.GSA:
                 self.mode_fix_type = result.mode_fix_type
+                self.pdop = result.pdop
+                self.hdop = result.hdop
+                self.vdop = result.vdop
                 if wait_for == "GSA":
                     return True
 
