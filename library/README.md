@@ -32,6 +32,14 @@ Stable (library only) from PyPi:
 * Just run `sudo pip3 install pa1010d`
 
 # Changelog
+0.0.2
+-----
+
+* Add support for disabling PPS LED
+* Handle spurious newlines in sentences
+* Add PDOP, VDOP and HDOP output
+* Handle GLL messages
+
 0.0.1
 -----
 
