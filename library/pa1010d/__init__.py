@@ -1,5 +1,6 @@
 import time
 import smbus
+import enum
 
 
 import pynmea2
@@ -8,6 +9,25 @@ import pynmea2
 __version__ = '0.0.1'
 
 PA1010D_ADDR = 0x10
+
+
+class PPS(enum.Enum):
+    """Available states for the PA1010D PPS LED"""
+
+    """Disable PPS LED"""
+    DISABLE = 0
+
+    """Blink after the first fix"""
+    AFTER_FIRST_FIX = 1
+
+    """Blink only for 3D fix"""
+    ONLY_3D = 2
+
+    """Blink for 2D or 3D fix"""
+    ONLY_2D_3D = 3
+
+    """Blink always"""
+    ALWAYS = 4
 
 
 class PA1010D():
@@ -60,7 +80,7 @@ class PA1010D():
 
         """
         for char_index in bytestring:
-            self._i2c.write_byte(self._i2c_addr, ord(char_index))
+            self._i2c.write_byte(self._i2c_addr, char_index)
 
     def send_command(self, command, add_checksum=True):
         """Send a command string to the PA1010D.
@@ -68,10 +88,13 @@ class PA1010D():
         If add_checksum is True (the default) a NMEA checksum will automatically be computed and added.
 
         """
+        if type(command) is str:
+            command = command.encode("ascii")
+
         # TODO replace with pynmea2 functionality
-        if command.startswith("$"):
+        if command.startswith(b"$"):
             command = command[1:]
-        if command.endswith("*"):
+        if command.endswith(b"*"):
             command = command[:-1]
 
         buf = bytearray()
@@ -105,9 +128,24 @@ class PA1010D():
             # Should be a full \r\n since the GPS emits spurious newlines
             if buf[-2:] == [ord("\r"), ord("\n")]:
                 # Remove line ending and spurious newlines from the sentence
-                return bytearray(buf).decode("ascii").strip().replace("\n","")
+                return bytearray(buf).decode("ascii").strip().replace("\n", "")
 
         raise TimeoutError("Timeout waiting for readline")
+
+    def set_pps(self, mode=PPS.ALWAYS, pulse_width=100):
+        """Set pulse per second config.
+
+        Define the status LED behaviour on the PA1010d.
+
+        :param mode: One PPS enum types
+        :param pulse_width: LED pulse with in ms (1ms to 999ms)
+
+        """
+        if not isinstance(mode, PPS):
+            raise ValueError("Mode must be of type PPS")
+
+        sentence = "PMTK285,{mode},{pulse_width}".format(mode=mode.value, pulse_width=pulse_width)
+        self.send_command(sentence)
 
     def update(self, wait_for="GGA", timeout=5):
         """Attempt to update from PA1010D.
@@ -188,7 +226,11 @@ class PA1010D():
                 # $PMTK011,MTKGPS*08 Successful bootup
                 # $PMTK010,001*2E    Startup
                 # $PMTK010,002*2D    Wake from standby, normal operation
-                print(sentence)
+
+                # set_pps will produce a:
+                # $PMTK001,285,3*3F  Confirm PPS LED setting
+                if self._debug:
+                    print(sentence)
                 return True
 
             else:
