@@ -11,8 +11,8 @@ while True:
     if result:
         print("""
 T: {timestamp}
-N: {longitude}
-E: {latitude}
+N: {latitude}
+E: {longitude}
 Alt: {altitude}
 Sats: {num_sats}
 Qual: {gps_qual}
