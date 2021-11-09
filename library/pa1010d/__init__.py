@@ -16,6 +16,9 @@ class PA1010D():
         "latitude",
         "longitude",
         "altitude",
+        "lat_dir",
+        "lon_dir",
+        "geo_sep",
         "num_sats",
         "gps_qual",
         "speed_over_ground",
@@ -40,6 +43,10 @@ class PA1010D():
         self.altitude = None
         self.num_sats = None
         self.gps_qual = None
+
+        self.lat_dir = None
+        self.lon_dir = None
+        self.geo_sep = None
 
         self.pdop = None
         self.hdop = None
@@ -146,7 +153,10 @@ class PA1010D():
                     self.timestamp = result.timestamp
                     self.latitude = result.latitude
                     self.longitude = result.longitude
+                    self.lat_dir = result.lat_dir
+                    self.lon_dir = result.lon_dir
                     self.altitude = result.altitude
+                    self.geo_sep = result.geo_sep
                     self.num_sats = result.num_sats
                     self.gps_qual = result.gps_qual
                 if wait_for == "GGA":
@@ -214,19 +224,13 @@ if __name__ == "__main__":
     while True:
         result = gps.update()
         if result:
-            print("""
-T: {timestamp}
-N: {longitude}
-E: {latitude}
-Alt: {altitude}
-Sats: {num_sats}
-Qual: {gps_qual}
-""".format(
-                timestamp=gps.timestamp,
-                longitude=gps.longitude,
-                latitude=gps.latitude,
-                altitude=gps.altitude,
-                num_sats=gps.num_sats,
-                gps_qual=gps.gps_qual
-            ))
+            print(f"""
+Time:      {gps.timestamp}
+Longitude: {gps.longitude: .5f} {gps.lon_dir}
+Latitude:  {gps.latitude: .5f} {gps.lat_dir}
+Altitude:  {gps.altitude}
+Geoid_Sep: {gps.geo_sep}
+Geoid_Alt: {float(gps.altitude) + -float(gps.geo_sep)}
+Used Sats: {gps.num_sats}
+Quality:   {gps.gps_qual}""")
         time.sleep(1.0)
