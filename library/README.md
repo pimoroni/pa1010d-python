@@ -32,6 +32,13 @@ Stable (library only) from PyPi:
 * Just run `sudo pip3 install pa1010d`
 
 # Changelog
+0.0.3
+-----
+
+* Add support for geoidal separation
+* Add support for lat/long direction
+* Require Python >= 3.6
+
 0.0.2
 -----
 
