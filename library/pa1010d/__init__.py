@@ -5,7 +5,7 @@ import smbus
 import pynmea2
 
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 PA1010D_ADDR = 0x10
 

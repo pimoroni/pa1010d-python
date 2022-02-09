@@ -16,6 +16,7 @@ Eg:
     PMTK225,<1 or 0> = Enable/Disable PPS
 """
 
+
 def timeout(err=None, timeout=5.0):
     if err is None:
         err = "Timed out!"

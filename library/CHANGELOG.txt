@@ -1,3 +1,8 @@
+0.0.4
+-----
+
+* Fix read/write for Python 3.9
+
 0.0.3
 -----
 

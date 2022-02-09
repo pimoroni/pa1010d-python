@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import time
 import sys
 
 from pa1010d import PA1010D
