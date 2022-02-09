@@ -67,7 +67,7 @@ class PA1010D():
 
         """
         for char_index in bytestring:
-            self._i2c.write_byte(self._i2c_addr, ord(char_index))
+            self._i2c.write_byte(self._i2c_addr, char_index)
 
     def send_command(self, command, add_checksum=True):
         """Send a command string to the PA1010D.
@@ -75,10 +75,13 @@ class PA1010D():
         If add_checksum is True (the default) a NMEA checksum will automatically be computed and added.
 
         """
+        if type(command) is not bytes:
+            command = command.encode("ascii")
+
         # TODO replace with pynmea2 functionality
-        if command.startswith("$"):
+        if command[0] == b"$":
             command = command[1:]
-        if command.endswith("*"):
+        if command[-1] == b"*":
             command = command[:-1]
 
         buf = bytearray()
