@@ -115,7 +115,7 @@ class PA1010D():
             # Should be a full \r\n since the GPS emits spurious newlines
             if buf[-2:] == [ord("\r"), ord("\n")]:
                 # Remove line ending and spurious newlines from the sentence
-                return bytearray(buf).decode("ascii").strip().replace("\n","")
+                return bytearray(buf).decode("ascii").strip().replace("\n", "")
 
         raise TimeoutError("Timeout waiting for readline")
 
