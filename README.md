@@ -1,6 +1,6 @@
 # Pimoroni PA1010D GPS Breakout
 
-[![Build Status](https://shields.io/github/workflow/status/pimoroni/pa1010d-python/Python%20Tests.svg)](https://github.com/pimoroni/pa1010d-python/actions/workflows/test.yml)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/pimoroni/pa1010d-python/test.yml?branch=master)](https://github.com/pimoroni/pa1010d-python/actions/workflows/test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/pimoroni/pa1010d-python/badge.svg?branch=master)](https://coveralls.io/github/pimoroni/pa1010d-python?branch=master)
 [![PyPi Package](https://img.shields.io/pypi/v/pa1010d.svg)](https://pypi.python.org/pypi/pa1010d)
 [![Python Versions](https://img.shields.io/pypi/pyversions/pa1010d.svg)](https://pypi.python.org/pypi/pa1010d)
