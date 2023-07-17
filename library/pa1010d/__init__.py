@@ -9,6 +9,12 @@ __version__ = '0.0.4'
 
 PA1010D_ADDR = 0x10
 
+PPS_DISABLE = 0
+PPS_AFTER_FIRST_FIX = 1
+PPS_3D_FIX_ONLY = 2
+PPS_3D_2D_FIX_ONLY = 3
+PPS_ALWAYS = 4
+
 
 class PA1010D():
     __slots__ = (
@@ -219,6 +225,15 @@ class PA1010D():
                 raise RuntimeError("Unsupported message type {type} ({sentence})".format(type=type(result), sentence=sentence))
 
         raise TimeoutError("Timeout waiting for {wait_for} message.".format(wait_for=wait_for))
+
+    def set_pps(self, mode, pulse_width=100):
+        if mode not in (0, 1, 2, 3, 4):
+            raise ValueError("Invalid PPS mode (0 to 4)")
+
+        if pulse_width > 900 or pulse_width < 1:
+            raise ValueError("Invalid PPS pulse_width (1 to 900ms)")
+
+        self.send_command(f"PMTK285,{mode},{pulse_width}")
 
 
 if __name__ == "__main__":
