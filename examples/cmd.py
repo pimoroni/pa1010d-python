@@ -5,7 +5,7 @@ import time
 from pa1010d import PA1010D
 
 """
-Run raw commands against the PA1010D GPS and return the respones.
+Run raw commands against the PA1010D GPS and return the responses.
 
 Eg:
     PMTK605 = Query Firmware Release Info

@@ -128,7 +128,7 @@ class PA1010D():
 
         Returns true if a sentence has been successfully parsed.
 
-        Returns false if an error has occured.
+        Returns false if an error has occurred.
 
         Will wait 5 seconds for a GGA message by default.
 
