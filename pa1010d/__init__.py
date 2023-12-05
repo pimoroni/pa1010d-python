@@ -79,7 +79,7 @@ class PA1010D:
         If add_checksum is True (the default) a NMEA checksum will automatically be computed and added.
 
         """
-        if isinstance(command, bytes):
+        if not isinstance(command, bytes):
             command = command.encode("ascii")
 
         # TODO replace with pynmea2 functionality
