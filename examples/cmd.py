@@ -25,8 +25,7 @@ def timeout(err=None, timeout=5.0):
     raise TimeoutError(err)
 
 
-responses = {
-}
+responses = {}
 
 if len(sys.argv) < 2:
     print(f"Usage: {sys.argv[0]} <command>")

@@ -3,7 +3,7 @@ import time
 import pynmea2
 import smbus2
 
-__version__ = '0.0.4'
+__version__ = "0.0.4"
 
 PA1010D_ADDR = 0x10
 
@@ -14,7 +14,7 @@ PPS_3D_2D_FIX_ONLY = 3
 PPS_ALWAYS = 4
 
 
-class PA1010D():
+class PA1010D:
     __slots__ = (
         "timestamp",
         "latitude",
@@ -32,7 +32,7 @@ class PA1010D():
         "vdop",
         "_i2c_addr",
         "_i2c",
-        "_debug"
+        "_debug",
     )
 
     def __init__(self, i2c_addr=PA1010D_ADDR, debug=False):
@@ -89,7 +89,7 @@ class PA1010D():
             command = command[:-1]
 
         buf = bytearray()
-        buf += b'$'
+        buf += b"$"
         buf += command
         if add_checksum:
             checksum = 0
@@ -97,9 +97,9 @@ class PA1010D():
             # so `for char in commaud` iterates through char ordinals
             for char in command:
                 checksum ^= char
-            buf += b'*'  # Delimits checksum value
+            buf += b"*"  # Delimits checksum value
             buf += "{checksum:02X}".format(checksum=checksum).encode("ascii")
-        buf += b'\r\n'
+        buf += b"\r\n"
         self._write_sentence(buf)
 
     def read_sentence(self, timeout=5):

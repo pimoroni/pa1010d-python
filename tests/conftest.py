@@ -22,7 +22,7 @@ class SMBus:
         pass
 
 
-@pytest.fixture(scope='function', autouse=False)
+@pytest.fixture(scope="function", autouse=False)
 def smbus():
     smbus = mock.MagicMock()
     smbus.SMBus = SMBus
