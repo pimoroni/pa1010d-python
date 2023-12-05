@@ -1,5 +1,5 @@
 import time
-import smbus
+import smbus2
 
 
 import pynmea2
@@ -39,7 +39,7 @@ class PA1010D():
 
     def __init__(self, i2c_addr=PA1010D_ADDR, debug=False):
         self._i2c_addr = i2c_addr
-        self._i2c = smbus.SMBus(1)
+        self._i2c = smbus2.SMBus(1)
 
         self._debug = debug
 
