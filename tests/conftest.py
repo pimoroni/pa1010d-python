@@ -1,6 +1,7 @@
-import pytest
-import mock
 import sys
+
+import mock
+import pytest
 
 
 class SMBus:

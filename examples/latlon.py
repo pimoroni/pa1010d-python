@@ -3,7 +3,6 @@ import time
 
 from pa1010d import PA1010D
 
-
 gps = PA1010D()
 
 while True:

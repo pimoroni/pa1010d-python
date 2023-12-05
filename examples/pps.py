@@ -3,7 +3,6 @@ import sys
 
 from pa1010d import PA1010D
 
-
 if len(sys.argv) < 2:
     print(f"Usage: {sys.argv[0]} <on/off>")
     sys.exit()

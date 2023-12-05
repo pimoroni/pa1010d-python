@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-import time
 import sys
+import time
 
 from pa1010d import PA1010D
-
 
 """
 Run raw commands against the PA1010D GPS and return the respones.

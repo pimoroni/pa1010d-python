@@ -1,9 +1,7 @@
 import time
-import smbus2
-
 
 import pynmea2
-
+import smbus2
 
 __version__ = '0.0.4'
 
