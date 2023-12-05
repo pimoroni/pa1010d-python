@@ -79,7 +79,7 @@ class PA1010D():
         If add_checksum is True (the default) a NMEA checksum will automatically be computed and added.
 
         """
-        if type(command) is not bytes:
+        if isinstance(command, bytes):
             command = command.encode("ascii")
 
         # TODO replace with pynmea2 functionality
@@ -152,7 +152,7 @@ class PA1010D():
                 continue
 
             # Time, position and fix
-            if type(result) == pynmea2.GGA:
+            if isinstance(result, pynmea2.GGA):
                 if result.gps_qual is None:
                     self.num_sats = 0
                     self.gps_qual = 0
@@ -170,11 +170,11 @@ class PA1010D():
                     return True
 
             # Geographic Lat/Lon (Loran holdover)
-            elif type(result) == pynmea2.GLL:
+            elif isinstance(result, pynmea2.GLL):
                 pass
 
             # GPS DOP and active satellites
-            elif type(result) == pynmea2.GSA:
+            elif isinstance(result, pynmea2.GSA):
                 self.mode_fix_type = result.mode_fix_type
                 self.pdop = result.pdop
                 self.hdop = result.hdop
@@ -183,23 +183,23 @@ class PA1010D():
                     return True
 
             # Position, velocity and time
-            elif type(result) == pynmea2.RMC:
+            elif isinstance(result, pynmea2.RMC):
                 self.speed_over_ground = result.spd_over_grnd
                 if wait_for == "RMC":
                     return True
 
             # Track made good and speed over ground
-            elif type(result) == pynmea2.VTG:
+            elif isinstance(result, pynmea2.VTG):
                 if wait_for == "VTG":
                     return True
 
             # SVs in view, PRN, elevation, azimuth and SNR
-            elif type(result) == pynmea2.GSV:
+            elif isinstance(result, pynmea2.GSV):
                 if wait_for == "GSV":
                     return True
 
             # ProprietarySentence handles boot up output such as "$PMTK011,MTKGPS*08"
-            elif type(result) == pynmea2.ProprietarySentence:
+            elif isinstance(result, pynmea2.ProprietarySentence):
                 # TODO If we implement sending commands *to* the GPS,
                 # they should not be permitted until after receiving this sequence
                 # $PMTK011,MTKGPS*08 Successful bootup
@@ -213,10 +213,10 @@ class PA1010D():
                 # requires merge and release of: https://github.com/Knio/pynmea2/pull/111
                 # TODO Drop this special case when #111 is merged & released
                 try:
-                    if type(result) in (
+                    if isinstance(result, (
                         pynmea2.types.proprietary.mtk.MTK011,
                         pynmea2.types.proprietary.mtk.MTK010
-                    ):
+                    )):
                         return True
                 except AttributeError:
                     pass
