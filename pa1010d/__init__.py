@@ -1,11 +1,9 @@
 import time
-import smbus
-
 
 import pynmea2
+import smbus2
 
-
-__version__ = '0.0.4'
+__version__ = "0.0.4"
 
 PA1010D_ADDR = 0x10
 
@@ -16,7 +14,7 @@ PPS_3D_2D_FIX_ONLY = 3
 PPS_ALWAYS = 4
 
 
-class PA1010D():
+class PA1010D:
     __slots__ = (
         "timestamp",
         "latitude",
@@ -34,12 +32,12 @@ class PA1010D():
         "vdop",
         "_i2c_addr",
         "_i2c",
-        "_debug"
+        "_debug",
     )
 
     def __init__(self, i2c_addr=PA1010D_ADDR, debug=False):
         self._i2c_addr = i2c_addr
-        self._i2c = smbus.SMBus(1)
+        self._i2c = smbus2.SMBus(1)
 
         self._debug = debug
 
@@ -81,7 +79,7 @@ class PA1010D():
         If add_checksum is True (the default) a NMEA checksum will automatically be computed and added.
 
         """
-        if type(command) is not bytes:
+        if not isinstance(command, bytes):
             command = command.encode("ascii")
 
         # TODO replace with pynmea2 functionality
@@ -91,7 +89,7 @@ class PA1010D():
             command = command[:-1]
 
         buf = bytearray()
-        buf += b'$'
+        buf += b"$"
         buf += command
         if add_checksum:
             checksum = 0
@@ -99,9 +97,9 @@ class PA1010D():
             # so `for char in commaud` iterates through char ordinals
             for char in command:
                 checksum ^= char
-            buf += b'*'  # Delimits checksum value
+            buf += b"*"  # Delimits checksum value
             buf += "{checksum:02X}".format(checksum=checksum).encode("ascii")
-        buf += b'\r\n'
+        buf += b"\r\n"
         self._write_sentence(buf)
 
     def read_sentence(self, timeout=5):
@@ -130,7 +128,7 @@ class PA1010D():
 
         Returns true if a sentence has been successfully parsed.
 
-        Returns false if an error has occured.
+        Returns false if an error has occurred.
 
         Will wait 5 seconds for a GGA message by default.
 
@@ -154,7 +152,7 @@ class PA1010D():
                 continue
 
             # Time, position and fix
-            if type(result) == pynmea2.GGA:
+            if isinstance(result, pynmea2.GGA):
                 if result.gps_qual is None:
                     self.num_sats = 0
                     self.gps_qual = 0
@@ -172,11 +170,11 @@ class PA1010D():
                     return True
 
             # Geographic Lat/Lon (Loran holdover)
-            elif type(result) == pynmea2.GLL:
+            elif isinstance(result, pynmea2.GLL):
                 pass
 
             # GPS DOP and active satellites
-            elif type(result) == pynmea2.GSA:
+            elif isinstance(result, pynmea2.GSA):
                 self.mode_fix_type = result.mode_fix_type
                 self.pdop = result.pdop
                 self.hdop = result.hdop
@@ -185,23 +183,23 @@ class PA1010D():
                     return True
 
             # Position, velocity and time
-            elif type(result) == pynmea2.RMC:
+            elif isinstance(result, pynmea2.RMC):
                 self.speed_over_ground = result.spd_over_grnd
                 if wait_for == "RMC":
                     return True
 
             # Track made good and speed over ground
-            elif type(result) == pynmea2.VTG:
+            elif isinstance(result, pynmea2.VTG):
                 if wait_for == "VTG":
                     return True
 
             # SVs in view, PRN, elevation, azimuth and SNR
-            elif type(result) == pynmea2.GSV:
+            elif isinstance(result, pynmea2.GSV):
                 if wait_for == "GSV":
                     return True
 
             # ProprietarySentence handles boot up output such as "$PMTK011,MTKGPS*08"
-            elif type(result) == pynmea2.ProprietarySentence:
+            elif isinstance(result, pynmea2.ProprietarySentence):
                 # TODO If we implement sending commands *to* the GPS,
                 # they should not be permitted until after receiving this sequence
                 # $PMTK011,MTKGPS*08 Successful bootup
@@ -215,10 +213,10 @@ class PA1010D():
                 # requires merge and release of: https://github.com/Knio/pynmea2/pull/111
                 # TODO Drop this special case when #111 is merged & released
                 try:
-                    if type(result) in (
+                    if isinstance(result, (
                         pynmea2.types.proprietary.mtk.MTK011,
                         pynmea2.types.proprietary.mtk.MTK010
-                    ):
+                    )):
                         return True
                 except AttributeError:
                     pass

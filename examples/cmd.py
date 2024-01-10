@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-import time
 import sys
+import time
 
 from pa1010d import PA1010D
 
-
 """
-Run raw commands against the PA1010D GPS and return the respones.
+Run raw commands against the PA1010D GPS and return the responses.
 
 Eg:
     PMTK605 = Query Firmware Release Info
@@ -26,8 +25,7 @@ def timeout(err=None, timeout=5.0):
     raise TimeoutError(err)
 
 
-responses = {
-}
+responses = {}
 
 if len(sys.argv) < 2:
     print(f"Usage: {sys.argv[0]} <command>")

@@ -1,6 +1,7 @@
-import pytest
-import mock
 import sys
+
+import mock
+import pytest
 
 
 class SMBus:
@@ -21,10 +22,10 @@ class SMBus:
         pass
 
 
-@pytest.fixture(scope='function', autouse=False)
+@pytest.fixture(scope="function", autouse=False)
 def smbus():
     smbus = mock.MagicMock()
     smbus.SMBus = SMBus
-    sys.modules["smbus"] = smbus
+    sys.modules["smbus2"] = smbus
     yield smbus
-    del sys.modules["smbus"]
+    del sys.modules["smbus2"]
